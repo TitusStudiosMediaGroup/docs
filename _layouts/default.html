@@ -10,18 +10,19 @@
         </div>
 
         <script>
+            $('span.nv').next(('span.o') || ('span.p')).prev().css('color', '#a0f0a0'); // Var Highlighing
+            $('span.nv').prev(('span.o') || ('span.p')).next().css('color', '#a0f0a0'); // Var Highlighing
+            $('span.p:contains("[")').nextUntil('span.p:contains("]")').filter('span.nv').css('color', '#a0f0a0') // Var Highlighing (Arrays)
+            $('span.nv').prev(('span.no')).next().css('color', '#667a66') // Function Highlighing
+            $('span.nv').prev(('span.kd')).next().css('color', '#667a66') // Function Highlighing
+            $('span.nv:contains("local")').css('color', '#a0f0f0'); // locals Highlighing
+            $('span.c1:contains("#[")').nextUntil('span.c1:contains("#")').css('color', '#808080'); // Comment Block Highlighing
+
             $('span.nv:contains("array")').css('color', '#f0a060'); // Type Highlighing
             $('span.nv:contains("number")').css('color', '#f0a060'); // Type Highlighing
             $('span.nv:contains("string")').css('color', '#f0a060'); // Type Highlighing
             $('span.nv:contains("vector")').css('color', '#f0a060'); // Type Highlighing
             $('span.nv:contains("entity")').css('color', '#f0a060'); // Type Highlighing
-
-            $('span.nv').next(('span.o') || ('span.p')).prev().css('color', '#a0f0a0'); // Var Highlighing
-            $('span.nv').prev(('span.o') || ('span.p')).next().css('color', '#a0f0a0'); // Var Highlighing
-            $('span.nv').prev(('span.no')).next().css('color', '#667a66') // Function Highlighing
-            $('span.nv').prev(('span.kd')).next().css('color', '#667a66') // Function Highlighing
-            $('span.nv:contains("local")').css('color', '#a0f0f0'); // locals Highlighing
-            $('span.c1:contains("#[")').nextUntil('span.c1:contains("#")').css('color', '#808080'); // Comment Block Highlighing
 
             $('span.vi:contains("@")').next('span.na:contains("name")').css('color', '#f0f0a0').nextUntil('span.vi:contains("@")').css('color', '#f0f0a0'); // Directive Highlighing
             $('span.vi:contains("@")').next('span.na:contains("inputs")').css('color', '#f0f0a0') // Directive Highlighing
