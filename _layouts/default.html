@@ -2,11 +2,16 @@
     {% include head.html %}
     <body>
         {% include nav.html %}
-	<div class="container">
-	    <section id="main_content">  
-		    {{ content }}
-	    </section>
-	</div>
+
+        <div class="container">
+            <section id="main_content">  
+                {{ content }}
+            </section>
+        </div>
+
+        <script>
+            $('"span.no":contains("array")').css('color', '#f0a060');
+        </script>
 
         {% include footer.html %}
     </body>
