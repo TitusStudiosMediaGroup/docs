@@ -4,6 +4,13 @@
 function void isolateSubMaterial(TargetHolo,IsolationArray:array,KeepSub,TotalSubMaterials,IsolatedMaterialOverride:string) {
     local InvisibleTexture = "models/proppertextures/invisible"
 
+    # Comment time!
+
+    #[
+        Comment Block!
+        But I doubt it will workd ;w;
+    ]#
+
     for (N=1,IsolationArray:count()) {
         holoEntity(IsolationArray[N,number]):setSubMaterial(KeepSub,InvisibleTexture)
     }
