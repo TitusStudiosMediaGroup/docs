@@ -35,6 +35,8 @@
             else {
                 $('span.vi:contains("@")').next('span.na:contains("model")').css('color', '#f0f0a0').nextUntil('span.na:contains("mdl")').css('color', '#f0f0a0').next().css('color', '#f0f0a0') // Directive Highlighing (Model String)
             }
+
+            $('span.vi:contains("@")').next('span.na:contains("autoupdate")').css('color', '#f0f0a0').next('span.nv:contains("none")' || 'span.nv:contains("all")').css('color', '#f0f0a0') // Directive Highlighing
         </script>
 
         {% include footer.html %}
