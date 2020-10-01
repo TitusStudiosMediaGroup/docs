@@ -7,8 +7,8 @@ function void isolateSubMaterial(TargetHolo,IsolationArray:array,KeepSub,TotalSu
     # Comment time!
 
     #[
-        HEYYY Does this work???
-        Because that would be pretty epic!
+        Comment Blocks work too!
+        Wowie.
     ]#
 
     for (N=1,IsolationArray:count()) {
