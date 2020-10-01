@@ -1,6 +1,13 @@
 # Hello World!
 
 {% highlight livescript linenos %}
+@name Cool E2 Name
+@inputs MyInput MyInput2
+@outputs MyOutput MyOutput2 MyOutput3
+@persist [E]:entity MyVar [Color]:vector
+@trigger none
+@model default
+
 function void isolateSubMaterial(TargetHolo,IsolationArray:array,KeepSub,TotalSubMaterials,IsolatedMaterialOverride:string) {
     local InvisibleTexture = "models/proppertextures/invisible"
 
