@@ -1,0 +1,344 @@
+This wiki has been created so that everyone with a github account can contribute to the documentation, so please do.  If what you are looking for isn't listed here, use [https://www.reddit.com/r/wiremod the subreddit] or the [https://discord.gg/H8UKY3Y Discord server].
+==Features==
+===Syntax===
+The syntax in the Expression 2 will take some time to get used to, but will give you a lot of power over your expressions. Remember there is not just one way to code something, you can accomplish the same task in several ways.
+
+In Expression 2 conditionals, numbers are considered false if they equal 0. Otherwise, they are considered true.
+Functions and methods which conceptually return "true" or "false" return 1 and 0 respectively.
+
+{|style="background:#E6E6FA"
+!align="left" width="200"| Syntax
+!align="left" width="450"| Example
+!align="left" width="1100"| Description
+|-
+| &#35; || &#35;This is a comment || Anything written after "&#35;" on the same line will be treated as a comment (it will be ignored when the chip runs)
+|-
+| &#35;[Comment]&#35; || &#35;[This is a multi-line<br/> comment]&#35; || Anything between &#35; brackets will be treated as a comment (it will be ignored when the chip runs) 
+|-
+| if () {} || if (A) {B = C} || If the value (the condition) between the parentheses is true, then run the statements between the braces.
+|-
+| else {} || else {A = B} || '''Must be preceded by if () {} or elseif () {}.''' If the previous condition was ''false'' then run the statements between the braces.
+|-
+| elseif () {} || elseif (A) {B = C} || '''Must be preceded by if () {} or elseif () {}.''' If the previous condition was false ''and'' the value between the parentheses is true, then run the statements between the braces.
+|-
+
+| ( ? : ) || D = A ? B : C || If A is true then return B otherwise return C. Note: <code>A ?: B</code> is the same as <code>A ? A : B</code>
+|-
+| & || if (A & B) {C = 1} || Returns 1 if both A and B are true.
+|-
+| <nowiki> |</nowiki> || if (A <nowiki>|</nowiki> B) {C = 1} || Returns 1 if A or B is true.
+|-
+|! || if (!A) {B = 1} || '''Must precede a value.''' Returns 1 if A is false (same as <code>A == 0</code>).
+|-
+| ~ || if (~Button & Button) {DO stuff} || '''Must precede an input variable.''' Returns 1 if the current execution was caused by a change in the input variable.
+|-
+| $ || Opitch = Pitch + $Pitch * 3 || '''Must precede an input/output/persistent variable which has a subtraction operator.''' Returns the current value of the variable minus the value of the variable at the end of the last execution. Note: Acceleration == $Velocity only when intervals are one second apart.
+Can also be used to check if a variable has changed.
+|-
+| -> || ->Input or ->Output || If you use it on an input, it returns 1 if the input is wired to something. If you use it on an output, it returns the number of wires to the output.
+|-
+| &#35;ifdef || &#35;ifdef entity:setAlpha(number) || Checks if the given Function is usable on the Server.
+|-
+| &#35;else || &#35;else || '''Must be preceded by &#35;ifdef.''' If the given Function is NOT usable on the Server then run the Code after it.
+|-
+| &#35;endif || &#35;endif || '''Must be preceded by &#35;ifdef or &#35;else.''' Closes the &#35;ifdef Statement.
+|-
+| switch () {} || switch (A) {`case B,` print("A equals B")` break` case C,` print("A equals C")` break` default,` print("A is something else")` break`} || Runs the case that is equal to A, otherwise runs default. (Linebreaks marked by `)
+|}
+
+=====Variables=====
+
+In Expression 2, all variables must start with a capital letter. For instance:
+
+{|style="background:#E6E6FA"
+!align="left" width="200"| Syntax
+!align="left" width="1100"| Description
+|-
+| @persist variable || This will '''not''' work, as the "variable" does not begin with a capital letter.
+|-
+| @persist Variable || This, however, will work, as "Variable" begins with a capital letter.
+|}
+
+=====@trigger directive=====
+
+The trigger directive can selectively enable or disable inputs from triggering executions.
+Possible values are all/none, but also a list of inputs.
+
+{|style="background:#E6E6FA"
+!align="left" width="200"| Syntax
+!align="left" width="1100"| Description
+|-
+| @trigger all || Default behavior, inputs always trigger executions
+|-
+| @trigger none  || Will never trigger from inputs, only timers, etc
+|-
+| @trigger Time Button || Will only trigger if the inputs Time or Button has changed
+|}
+
+=====@model directive=====
+
+The model directive can be used to set the model of your expression chip.
+@model *model path*
+
+=====@autoupdate directive=====
+
+Using the autoupdate directive will enable auto updating. What this means is that whenever you paste a duplication of an E2 with autoupdate enabled, the E2 will check your files for a new version of that E2 and upload it.
+Note:
+* Only works on saved E2s.
+* To disable autoupdate, simply don't write @autoupdate
+* If you for some reason need to get an old version of your E2 from a dupe, you will have to temporarily change the name of your E2 so that the autoupdate feature doesn't find the file. Then it'll silently fail and leave you with the old code.
+
+===Loops===
+E2 features three types of loop: while loops, for loops and foreach loops. These allow instructions to be repeated many times in one execution, rather than relying on multiple executions to perform repeat tasks. Be aware that loops that perform too many instructions during an execution will exceed the E2's op quota and cause it to stop running (see "Performance" below).
+
+{|style="background:#E6E6FA"
+!align="left" width="200"| Syntax
+!align="left" width="450"| Example
+!align="left" width="1100"| Description
+|-
+| while () {} || while (A) {B++} || Any instructions between the braces will repeat, as long as the condition between the parentheses is true. If the condition is false, the instructions will be skipped and the E2 will continue from the end of the loop. Note that the condition is only checked at the very start of each loop.
+|-
+| for () {} || for (I = A, B[, C]) {} || Adds a value C to a Variable over every iteration until it equals a value B.  If a step C is not specified it will be set to one. Note that A and B are evaluated only once - if they are calculated from variables that the loop sets to new values, this will not change the number of iterations.
+|-
+| foreach () {} || foreach(K,V:type=Table) {} || Loops over each element of the specified type in Table. Assigns the key to K and the value to V. Elements that are not of the specified types are skipped. Elements can be added, removed, or modified, however elements that are added will not be processed in the current loop. On tables, it loops over the string keys by default. Use `foreach(K:number, ...` to loop over the number keys instead.
+|-
+| continue || if (A) {continue} || '''Can only be used within a while/for/foreach loop'''. This will immediately return to the start of the loop, skipping any following instructions.
+|-
+| break || if (A) {break} || '''Can only be used within a while/for/foreach loop''' (or switch-case statement, see above). This will immediately go to the end of the loop and exit it, skipping any following instructions.
+|}
+
+===Performance===
+Did some performance tests in Garry's Mod to see what it could churn out:
+
+~3.000.000/s arithmetic operations (+-*/) on numbers, 2000 ops, 200 executions in 0.13s
+
+~850.000/s arithmetic operations (+-*/) on vectors, 2000 ops, 100 executions in 0.23s
+
+Although E2 can do a lot, it has quotas to prevent servers from lagging. If the amount of ops used in a tick exceeds the tickquota, then the expression shuts down. Every tick, the ops used minus the softquota is added to a counter, if that counter exceeds the hardquota, then the expression shuts down. If your expression is shutting down, then it is recommended you learn better coding practices, such as storing commonly used values in a variable.
+
+===Editor Shortcut Keys===
+{|style="background:#E6E6FA"
+!align="left" width="150"| Shortcut
+!align="left" width="250"| Description
+|-
+| Ctrl-Space || Validate (and move cursor to error)
+|-
+| Ctrl-S || Save
+|-
+| Ctrl-Q || Close
+|-
+| Ctrl-Z || Undo
+|-
+| Ctrl-Y || Redo
+|-
+| Ctrl-X || Cut
+|-
+| Ctrl-C || Copy
+|-
+| Ctrl-V || Paste
+|-
+| Ctrl-A || Select all
+|-
+| Ctrl-I / Tab || Indent
+|-
+| Ctrl-O / Shift-Tab || Outdent
+|-
+| Ctrl-K || Comment the selected block
+|-
+| Ctrl-Shift-K || Uncomment the selected block
+|-
+| Ctrl-F || Find
+|-
+| Ctrl-H || Replace
+|-
+| Ctrl-Up || Scroll up
+|-
+| Ctrl-Down || Scroll down
+|-
+| Ctrl-Left || Jump one word left
+|-
+| Ctrl-Right || Jump one word right
+|-
+| Ctrl-Home || Go to first line
+|-
+| Ctrl-End || Go to last line
+|-
+| Ctrl-D || Duplicate line
+|}
+
+==Tutorials==
+
+If you make a guide related to E2, please feel free to add it to this list!
+
+*[http://www.youtube.com/ElementWire ElementWire's YouTube channel]
+*[http://www.youtube.com/UltimateWire UltimateWire's YouTube channel]
+*[http://www.youtube.com/NickMBR NickMBR's YouTube channel PT-BR]
+*[http://www.youtube.com/dvdvideo1234 DVD's YouTube channel]
+*[https://docs.google.com/document/d/1MNKFwi8qnF4aPPiSTw0wYixiySx7x_rQcmDNyKGKhYg/pub Revan's Expression Gate 2 Guide - The Basics]
+*[https://web.archive.org/web/20160301112345/http://www.wiremod.com/forum/expression-2-discussion-help/9766-intermediate-guide-expression-2-a.html In-depth guide by Matte]
+*[https://web.archive.org/web/20160324212824/http://www.wiremod.com/forum/expression-2-discussion-help/32188-player-targeter-script.html Player Targeting E2 in detail]
+*[https://www.maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/index0548-2.html Expression 2 Guide]
+*[https://www.maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/index3edb.html Expression 2 Examples]
+*[https://www.maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/indexe0aa-2.html E2 And Plugs with Buttons]
+
+Don't see the tutorial you need here?
+Check out the [https://web.archive.org/web/20160324213016/http://www.wiremod.com/forum/expression-2-discussion-help/22593-e2-all-about-tutorials-links-them-tips-making-them.html tutorial list] at the fourm archives.
+
+Still can't find the tutorial you need?
+Ask a question in [https://www.reddit.com/r/wiremod the subreddit] or the [https://discord.gg/cqJ45CT Discord server].
+
+==Console Commands==
+{|style="background:#E6E6FA"
+!align="left" width="210"| Command
+!align="left" width="*"| Description
+|-
+|wire_expression2_model &lt;model&gt; || Manually changes the expression's model.
+|-
+|wire_expression2_reload || Reloads all E2 extensions, useful for debugging your own extensions. Keep in mind that client-side files will be taken from gmod's cache in multi-player mode.
+|-
+|wire_expression2_debug 0/1 || Toggles debug mode, which shows info that might be useful for the developers. You need to do "wire_expression2_reload" after changing for this to have any effect.
+|-
+|wire_expression2_extension_enable &lt;extension&gt; || Enables the specified extension.
+|-
+|wire_expression2_extension_disable &lt;extension&gt; || Disables the specified extension.
+|-
+|wire_expression2_unlimited 0/1 || Enables/disables performance limiting.
+|-
+|}
+Note: Most E2 addons do not register themselves as extensions and thus cannot be turned on or off with the above commands. A notable exception is the [[propcore]] extension in the UWSVN, which is disabled by default.
+
+Also, you must run wire_expression2_reload in order for enabling/disabling extensions to take effect.
+
+==Datatypes==
+Expression2 uses several datatypes and to keep the wiki at a reasonable size we use a shorthand for those datatypes, here is a list of all the shorthands used and the datatype they represent.
+{|style="background:#E6E6FA"
+!align="left" width="*"| Shorthand
+!align="left" width="150"| Datatype
+|-
+|[[Type-Number.png]] || [[#Number|Number]]
+|-
+|[[Type-Vector2.png]] / [[Type-Vector.png]] / [[Type-Vector4.png]] || [[#Vector|2D / 3D / 4D Vector]]
+|-
+|[[Type-Angle.png]] || [[#Angle|Angle]]
+|-
+|[[Type-String.png]] || [[#String|String]]
+|-
+|[[Type-Entity.png]] || [[#Entity|Entity]]
+|-
+|[[Type-Array.png]] || [[#Array|Array]]
+|-
+|[[Type-Table.png]] || [[#Table|Table]]
+|-
+|[[Type-RangerData.png]] || [[#Built-In_Ranger|Ranger Data]]
+|-
+|[[Type-Bone.png]] || [[#Bone|Bone]]
+|-
+|[[Type-Matrix2.png]] / [[Type-Matrix.png]] / [[Type-Matrix4.png]] || [[#Matrix|2x2 / 3x3 / 4x4 Matrix]]
+|-
+|[[Type-WireLink.png]] || [[#Wirelink|Wirelink]]
+|-
+|[[Type-ComplexNumber.png]] || [[#Complex|Complex number]]
+|-
+|[[Type-Quaternion.png]] || [[#Quaternion|Quaternion]]
+|-
+|}
+
+
+===Default Extensions===
+Basic Features: [[e2-docs-core|core]], [[e2-docs-debug|debug]], [[e2-docs-number|number]], [[e2-docs-selfaware|selfaware]], 
+[[e2-docs-string|string]], [[e2-docs-timer|timer]]
+
+World: [[e2-docs-angle|angle]], [[e2-docs-color|color]], [[e2-docs-find|find]], [[e2-docs-ranger|ranger]], [[e2-docs-sound|sound]]
+
+Math: [[e2-docs-bitwise|bitwise]], [[e2-docs-complex|complex]], [[e2-docs-matrix|matrix]], [[e2-docs-quaternion|quaternion]], [[e2-docs-vector|vector]], [[e2-docs-vector2|vector2/4]]
+
+Entities: [[e2-docs-bone|bone]], [[e2-docs-constraint|constraint]], [[e2-docs-egpfunctions|egp]], [[e2-docs-entity|entity]], [[e2-docs-hologram|hologram]], [[e2-docs-npc|npc]]
+
+Players: [[e2-docs-chat|chat]], [[e2-docs-console|console]], [[e2-docs-player|player]], [[e2-docs-weapon|weapon]]
+
+Data storage: [[e2-docs-array|array]], [[e2-docs-files|files]], [[e2-docs-globalvars|globalvars]], [[e2-docs-serialization|serialization]], [[e2-docs-table|table]]
+
+Communication: [[e2-docs-datasignal|datasignal]], [[e2-docs-http|http]], [[e2-docs-signal|signal]], [[e2-docs-wirelink|wirelink]]
+
+Informational: [[e2-docs-gametick|gametick]], [[e2-docs-serverinfo|serverinfo]], [[e2-docs-steamidconv|steamidconv]], [[e2-docs-unitconv|unitconv]]
+
+===Additional Extensions===
+Disabled by default: [[e2-docs-custom-constraintcore|constraintcore]], [[e2-docs-custom-effects|effects]], [[e2-docs-custom-prop|propcore]], [[e2-docs-custom-remoteupload|remoteupload]], [[e2-docs-custom-wiring|wiring]]
+
+Wire-Extras ([https://github.com/wiremod/wire-extras]): [[e2-docs-custom-camera|camera]], [[e2-docs-custom-ftrace|ftrace]], [[e2-docs-custom-holoanim|holoanim]], [[e2-docs-custom-light|light]], [[e2-docs-custom-stcontrol|stcontrol]], [[e2-docs-custom-tracesystem|tracesystem]]
+
+
+===E2 Variable Scopes===
+'''Developed by:''' Rusketh
+
+Variables in E2 can now be assigned to scopes, unlike previous versions of E2 where all variables were global.
+
+A global variable is one that can be accessed from every point inside the E2 code, unlike local variables which can only be accessed from inside the block they are declared.
+
+When your E2 code starts to get complex, local variables are a useful way to insure that only one block of code has access to its own set of variables. This prevents scripting errors when one block of code inadvertently modifies variables used by another block of code.
+
+All variables defined as either an Input, an Output or a Peristant variable will always be in the global scope. Custom functions will run inside their own environment meaning they only have access to global variables and variables defined inside their own scopes.
+
+====Example====
+ Variable = vec(20,30,40) &#35;This is a Global variable
+  
+ if ( Variable ) {
+        local Variable = "Test" #This is a local variable
+ }
+
+===Include directive===
+
+'''Developed by:''' Divran, Rusketh
+
+This extension allows you to split up an E2 into several files and then include the code in those files in your main E2, which can help keep things more organized when your expressions gets more complex.
+
+{|style="background:#E6E6FA"
+!align="left" width="200"| Syntax
+!align="left" width="300"| Example
+!align="left" width="1250"| Description
+|-
+| &#35;include "" || &#35;include "myincludes/file" || The include line will be the location where the referenced E2 will be executed. <br/> Note that .txt is omitted.
+|}
+
+Apart from global variables, everything in the included E2 is run in their own environment. Also, all of the directives, except for name and model, is merged with the main E2.
+
+Remember to ''always'' use include inside an "if (first())" (or similar) statement.
+
+When reading an E2 that uses the include directive, you get the option to download just the main E2 or everything. Keep in mind that if you want to update the E2, you have to save the expressions in the same location as where the E2 expects to find them. If you don't do this, you will get a file not found error.
+
+Due to the nature of the include directive, it can only take a constant string, and not a variable.
+
+====Example====
+main.txt:
+<code>
+ @name Include e2 main
+ 
+ #include "lib/functions"
+ 
+ includedFunction();
+</code>
+
+lib/functions.txt:
+<code>
+ @name Include e2 example
+
+ function includedFunction(){
+    print("Hello includes!")
+ }
+</code>
+
+==See Also==
+*[https://www.maurits.tv/data/garrysmod/wiki/wiki.garrysmod.com/index0548-2.html Expression 2 Guide]
+*[https://web.archive.org/web/20160521002143/http://www.wiremod.com/forum/expression-2-discussion-help/11698-e2-highlighting-notepad.html Expression 2 syntax higlighting for Notepad++]
+*[https://web.archive.org/web/20130313203732/http://www.wiremod.com/forum/expression-1-2/19467-e2edit-write-e2-anywhere.html E2Edit, a stand alone expression 2 editor. By itsbth]
+
+==Credits==
+I would like to extend thanks to all of the following people who have made contributions to Expression 2 in one way or another, making it into what it is today.
+
+'''Shandolum, ZeikJT, Jimlad, Beer, Magos Mechanicus, Gwahir, chinoto, pl0x, Turck3, Ph3wl, Hunter234564, Fishface60, GUN, Bobsymalone, TomyLobo, Tolyzor, Jeremydeath, I am McLovin, Fizyk, Divran, Nebual, Rusketh'''
+
+And of course all you others out there who use it, provide constructive feedback or help others become familiar with it!
+
+Thank you! // Syranide
+
+''P.S. I'm sorry if I forgot to mention someone!''

@@ -1,0 +1,279 @@
+{{Entity
+|cat=Wire Display
+
+|func=Spawns EGP Screen, Emitter or HUD.
+
+|prim=Spawns an EGP
+
+|sec=Link an EGP HUD to a vehicle (So that the driver is able to see the HUD, not only you)
+
+|reload=Reload the EGP Screen
+
+|instructions=
+#Spawn a Display and then wire it to an E2's Wirelink input. Use the EGP functions below to draw on the screen.
+
+|input=
+;[[Type-Entity.png]] User : The entity of the player who is using the screen (aiming at the screen and pressing the Use key.)
+;[[Type-Wirelink.png]] link : The wirelink to the screen, needed when you want to do something with it
+
+}}
+
+===Hints===
+*EGP v3 is in the official wire SVN.
+*Indexes start at 1 and end at the max number of objects (300 by default). If you try to create an object with an index outside this range, the index will be clamped. This means if you create an object with index 0, it will change to index 1.
+* [[Expression2_Graphics_Processor:Examples|EGP Examples]]
+* To use EGP HUDs, draw whatever to one, and then click Use on it to activate it. EGP HUDs also have an input to toggle between the 0-512/Your screen's res modes.
+* egpFont allows any loaded fonts, previously this was the whitelist, which may be useful as guideline:
+** WireGPU_ConsoleFont
+** Coolvetica
+** Arial
+** Lucida Console
+** Trebuchet
+** Courier New
+** Times New Roman
+** ChatFont
+** Marlett
+** Roboto
+
+===Description===
+The EGP screen uses Expression 2 to draw. This makes it much easier to code than GPU, but less powerful. It beats GPU at quickly and easily making cool-looking menus, but it is virtually impossible to make any kind of games which is possible with the GPU, because of the limitations. If you're the owner of the server, however, you can raise the limit at the cost of possible lag or abuse.
+
+EGP screens use a virtual coordinate system. The origin is the top left, and any angular rotation is specified counterclockwise, in degrees:
+
+[[egp-coordinates.png]]
+
+===Console Commands===
+<pre>wire_egp_max_objects -- Change the max number of objects allowed per screen. Default: 300
+wire_egp_max_umsg_per_sec -- Change the max number of usermessages (data transfers from server to client. They cause lag if spammed too much) per second. Default: 10
+
+wire_egp_allow_emitter -- Allow or disallow the usage of EGP Emitters. Default: 1 (Allowed. Use 0 to disallow.)
+wire_egp_allow_hud -- Allow or disallow the usage of EGP HUDs. Default: 1
+wire_egp_allow_screen -- Allow or disallow the usage of EGP Screens. Default: 1</pre>
+
+
+===Expression 2 Commands===
+==Note==
+Every creation command has a numerical index. You use this index to edit that object after creating it.
+:{|style="background:#E6E6FA;"
+!align="left" width="150"| Function
+!align="left" width="60"| Returns
+!align="left" width="1000"| Description 
+|-
+!colspan="3" | '''Creating Objects'''
+|-
+!colspan="3" align="left"|''Box''
+|-
+|XWL:egpBox(N,V2,V2) || - || Creates a box object. Arguments are: Position, Size
+|-
+|XWL:egpBoxOutline(N,V2,V2) || - || Same as above, except it's only an outline.
+|-
+|XWL:egpRoundedBox(N,V2,V2) || - || Creates a box with rounded corners.
+|-
+|XWL:egpRoundedBoxOutline(N,V2,V2) || - || Creates an outline of a box with rounded corners.
+|-
+!colspan="3" align="left"|''Text''
+|-
+|XWL:egpText(N,S,V2) || - || Creates a text object. Arguments are: Text, Position
+|-
+|XWL:egpTextLayout(N,S,V2,V2) || - || Creates a text layout object. Arguments are: Text,Position, Size
+|-
+!colspan="3" align="left"|''Polygon''
+|-
+|XWL:egpPoly(N,...) || - || Creates a polygon. '...' can be any number of 2d vectors or 4d vectors. If it is a 2d vector, it will only set the position of the vertex. If it is a 4d vector, it will also set the texture position of the vertex. Read more about texture positions at [[Surface.DrawPoly|the DrawPoly page]].
+|-
+|XWL:egpPoly(N,R) || - || Same as above except with an array instead of seperate arguments.
+|-
+|XWL:egpPolyOutline(N,...) || - || Same as above, except it's only an outline.
+|-
+|XWL:egpPolyOutline(N,R) || - || Same as above, except it's only an outline.
+|-
+!colspan="3" align="left"|''Line''
+|-
+|XWL:egpLine(N,V2,V2) || - || Creates a line object. Arguments are: Position nr 1, Position nr 2
+|-
+!colspan="3" align="left"|''Circle''
+|-
+|XWL:egpCircle(N,V2,V2) || - || Creates a circle object. Arguments are: Position, Size
+|-
+|XWL:egpCircleOutline(N,V2,V2) || - || Same as above, except it's only an outline.
+|-
+!colspan="3" align="left"|''Triangle''
+|-
+|XWL:egpTriangle(N,V2,V2,V2) || - || Creates a triangle object. Arguments are: Position nr 1, Position nr 2, Position nr 3
+|-
+|XWL:egpTriangleOutline(N,V2,V2,V2) || - || Same as above, except it's only an outline.
+|-
+!colspan="3" align="left"|''Wedge''
+|-
+|XWL:egpWedge(N,V2,V2) || - || Creates a wedge object. Arguments are: Position, Size. Wedge objects are like circles, except they have a cake-piece-like mouth which you can change using egpSize.
+|-
+|XWL:egpWedgeOutline(N,V2,V2) || - || Same as above, except it's an outline.
+|-
+!colspan="3" align="left"|''3DTracker''
+|-
+|XWL:egp3DTracker(N,V) || - || Creates a 3D tracker object. Arguments are: World position.
+|-
+!colspan="3"|'''Editing Objects'''
+|-
+!colspan="3" align="left"|''Shared''
+|-
+|XWL:egpOrder(N,N) || - || Set the order the object is rendered.
+|-
+|XWL:egpColor(N,V4) || - || Change the color of an object.
+|-
+|XWL:egpColor(N,V) || - || Same as above.
+|-
+|XWL:egpColor(N,N,N,N,N) || - || Same as above.
+|-
+|XWL:egpAlpha(N,N) || - || Change the alpha (transparency) of an object.
+|-
+|XWL:egpParent(N,N) || - || Parent an object to another object. Note that parented objects' positions are local to their parent.
+|-
+|XWL:egpParentToCursor(N) || - || Parent an object to your cursor. This is the same as doing XWL:egpParent(N,-1).
+
+Note that this "parenting" only makes the object move to YOUR OWN cursor, and other people will see the objects attached to THEIR cursor, not yours.
+|-
+|XWL:egpUnParent(N) || - || Remove the parenting of an object.
+|-
+!colspan="3" align="left"|''Object-specific''
+|-
+|XWL:egpSetText(N,S) || - || Changes the text. Works on: text and text layout.
+|-
+|XWL:egpAlign(N,N) || - || Change the horizontal alignment. Works on: text and text layout. Number can be 0, 1 or 2
+|-
+|XWL:egpAlign(N,N,N) || - || Change the horizontal and vertical alignment. Works on: text and text layout. Numbers can be 0, 1 or 2.
+|-
+|XWL:egpFont(N,S) || - || Change the font. Works on: text and text layout.
+|-
+|XWL:egpFont(N,S,N) || - || Change the font and size. Works on: text and text layout.
+|-
+|XWL:egpMaterial(N,S) || - || Change the material of an object. Works on: Any object that can have a material (ie does '''not''' work on outline objects)
+|-
+|XWL:egpSize(N,N) || -  || Change the size of f.ex. line widths, text sizes, wedge 'mouth' size. Works on: Text objects, line, and all outline objects except wedge.
+|-
+|XWL:egpSize(N,V2) || - || Change the size. Works on: Any object with width and height size (ie does '''not''' work on text, poly, triangle, etc. Note: '''does''' work on line).
+|-
+|XWL:egpPos(N,V2) || - || Change the position. Works on: Any object with x and y position (ie does '''not''' work on poly, line, triange, etc).
+|-
+|XWL:egpPos(N,V) || - || Change the world position. Works on: 3D tracker.
+|-
+|XWL:egpAngle(N,N) || - || Change the angle. Works on: Any object with an angle (ie box, circle, wedge, etc)
+|-
+|XWL:egpAngle(N,V2,V2,N) || - || Rotates the object around the first vec2 with the second vec2 as offset at angle N. Works on: Same as egpAngle (above), including text and textlayout (but it doesn't change the text's angle)
+|-
+|XWL:egpRadius(N,N) || - || Sets the corner radius of rounded boxes. Works on: rounded box and rounded box outline.
+|-
+|XWL:egpFidelity(N,N) || - || Sets the fidelity (The number of vertices the circle will use) of circles and wedges. The value is clamped between 3 and 180. Works on: circles and wedges.
+|-
+!colspan="3" |'''Getting Information About Objects'''
+|-
+!colspan="3" align="left"|''Shared''
+|-
+|XWL:egpOrder(N) || [[Type-Number.png]] || Returns the order the object is drawn in.
+|-
+|XWL:egpColor4(N) || [[Type-Vector4.png]] || Returns a 4d vector containing the color of the object.
+|-
+|XWL:egpColor(N) || [[Type-Vector.png]] || Returns a 3d vector containing the color of the object.
+|-
+|XWL:egpAlpha(N) || [[Type-Number.png]] || Returns the alpha of the object.
+|-
+!colspan="3" align="left"|''Object-specific''
+|-
+|XWL:egpPos(N) || [[Type-Vector2.png]] || Returns the position. Works on: See this function's editing function
+|-
+|XWL:egpSize(N) || [[Type-Vector2.png]] || Returns the size. Works on: Any object with width and height size (ie box, circle, text layout, etc)
+|-
+|XWL:egpSizeNum(N) || [[Type-Number.png]] || Returns the number size. Works on: Any object with a number size (ie text, text layout, line, wedge, etc)
+|-
+|XWL:egpAngle(N) || [[Type-Number.png]] || Returns the angle. Works on: See this function's editing function
+|-
+|XWL:egpVertices(N) || [[Type-Array.png]] || Returns an array of the vertices of the object. Works on: Any object which does not have an X,Y position (ie polygon, line, triangle, etc)
+|-
+|XWL:egpMaterial(N) || [[Type-String.png]] || Returns the material of the object. Works on: See this function's editing function
+|-
+|XWL:egpRadius(N) || [[Type-Number.png]] || Gets the corner radius of rounded boxes. Works on: rounded box and rounded box outline.
+|-
+|XWL:egpFidelity(N) || [[Type-Number.png]] || Returns the fidelity of the object. Works on: circles and wedges.
+|-
+|XWL:egpGlobalPos(N) || [[Type-Vector.png]] || Returns the "global" (global meaning it takes the parents' positions into consideration as well) position as a 3D vector. X and Y being the 2D X,Y coordinates, while Z is the angle. Works on: Any object which has X,Y positioning (boxes, circles, wedges, text).
+|-
+|XWL:egpGlobalVertices(N) || [[Type-Array.png]] || Returns an array of 2D vectors with the "global" positions of the vertices in the object. Works on: any object which uses vertices for positioning (triangles, lines, polygons).
+|-
+!colspan="3" |'''Other Functions'''
+|-
+!colspan="3" align="left"|''Removing Objects''
+|-
+|XWL:egpClear() || - || Removes all objects from the screen.
+|-
+|XWL:egpRemove(N) || - || Removes the object.
+|-
+!colspan="3" align="left"|''Informational''
+|-
+|XWL:egpNumObjects() || [[Type-Number.png]] || Returns the number of objects on the screen.
+|-
+|egpMaxObjects() || [[Type-Number.png]] || Returns the maximum amount of objects you can have.
+|-
+|egpMaxUmsgPerSecond() || [[Type-Number.png]] || Returns the maximum number of usermessages you can send per second.
+|-
+|egpCanSendUmsg() || [[Type-Number.png]] || Returns 1 if you can send a usermessage now, else 0.
+|-
+!colspan="3" align="left"|''Queue Management''
+|-
+|egpClearQueue() || - || Clear your entire queue.
+|-
+|egpQueue() || [[Type-Number.png]] || Returns the number of items in your queue.
+|-
+|XWL:egpRunOnQueue(N) || - || Set to 1 if you want your E2 to be triggered once the queue has finished sending all items in the queue for the screen.
+|-
+|egpQueueClk() || [[Type-Number.png]] || Returns 1 if the current execution was caused by the EGP queue system.
+|-
+|egpQueueClk(XWL) || [[Type-Number.png]] || Returns 1 if the current execution was caused by the EGP queue system regarding the screen 'XWL'
+|-
+|egpQueueClk(E) || [[Type-Number.png]] || Same as above, except with an Entity argument instead of Wirelink.
+|-
+|egpQueueScreen() || [[Type-Entity.png]] || Returns the screen which the queue finished sending items for.
+|-
+|egpQueueScreenWirelink() || [[Type-WireLink.png]] || Same as above, except returns the screen's Wirelink.
+|-
+|egpQueuePlayer() || [[Type-Entity.png]] || Returns the player which ordered the items to be sent (This is usually yourself, except if you're sharing a screen with someone else, editing it at the same time).
+|-
+|egpQueueClkPly(E) || [[Type-Number.png]] ||  Returns 1 if the current execution was caused by the EGP queue system, and the player E was the player who ordered the items to be sent.
+|-
+!colspan="3" align="left"|''Other Useful Functions''
+|-
+|XWL:egpCursor(E) || [[Type-Vector2.png]] || Returns the aim position on the screen by the player E.
+|-
+|XWL:egpSaveFrame(S/N) || - || Saves the current frame with the name S (or N, but using N is the same as doing N:toString())
+|-
+|XWL:egpLoadFrame(S/N) || - || Loads the frame with the name S (or N, but using N is the same as doing N:toString())
+|-
+|egpScrSize(E) || [[Type-Vector2.png]] || Returns the player's screen resolution size.(1)
+|-
+|egpScrW(E) || [[Type-Number.png]] || Returns the player's screen resolution width.(1)
+|-
+|egpScrH(E) || [[Type-Number.png]] || Returns the player's screen resolution height.(1)
+|-
+|XWL:egpHasObject(N) || [[Type-Number.png]] || Returns 1 if the object exists on the screen, 0 if not.
+|-
+|XWL:egpCopy(N,N) || - || Copies the settings of the second object into the first. If the first object does not exist, it's created. Useful if you want to have two nearly identical objects. You can - after using this function - just change that 1 little thing that's different to the second object.
+|-
+|XWL:egpScale(V2,V2) || - || Sets the scale of the screen's X axis to the first vector and Y axis to the second vector.
+|-
+|XWL:egpResolution(V2,V2) || - || Sets the scale of the screen such that the top left corner is equal to the first vector and the bottom right corner is equal to the second vector. Note that with this and the above function, the screen's real resolution does not change. The EGP resizes your objects to "fake" the new resolution/scale.
+|-
+|XWL:egpDrawTopLeft(N) || - || Set to 1 to make boxes, box outlines, rounded boxes, and rounded box outlines draw from the top left corner instead of from the center. Set to 0 to change back.
+|-
+|XWL:egpMaterialFromScreen(N,E) || - || Set the material of object N to the material from another RenderTarget screen. Note that when using this function with an EGP screen (A normal screen; Not emitter or hud), you need to update the screen by modifying something for the material to update. Alternatively you can parent an invisible box to your cursor. This will force the screen to update every frame, and will make the material update every frame as well.
+|-
+|XWL:egpToWorld(V2) || [[Type-Vector.png]] || Converts a 2D vector on the screen or emitter into a 3D vector in the world.
+|}
+
+(1): The values saved in these functions do not update when a player changes resolution during the game. They only update when the player first joins the server. To update the values manually, use the console command
+
+<pre>EGP_ScrWH W H</pre>
+
+replacing "W" and "H" with your screen's resolution. Example:
+
+<pre>EGP_ScrWH 1920 1080</pre>
+
+(Note that this also means anyone can change their egpScrSize to return fake values by entering the command followed by fucked up numbers)
