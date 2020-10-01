@@ -1,6 +1,6 @@
 # Hello World!
 
-{% highlight js linenos %}
+{% highlight livescript linenos %}
 function void isolateSubMaterial(TargetHolo,IsolationArray:array,KeepSub,TotalSubMaterials,IsolatedMaterialOverride:string) {
     local InvisibleTexture = "models/proppertextures/invisible"
 
