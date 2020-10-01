@@ -10,7 +10,10 @@
         </div>
 
         <script>
-            $('span:contains("array")').css('color', '#f0a060');
+            $('span.nv:contains("array")').css('color', '#f0a060');
+            $('span.nv:contains("number")').css('color', '#f0a060');
+            $('span.nv:contains("string")').css('color', '#f0a060');
+            $('span.nv:contains("vector")').css('color', '#f0a060');
         </script>
 
         {% include footer.html %}
