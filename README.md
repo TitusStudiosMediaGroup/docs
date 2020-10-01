@@ -6,6 +6,11 @@ function void isolateSubMaterial(TargetHolo,IsolationArray:array,KeepSub,TotalSu
 
     # Comment time!
 
+    #[
+        HEYYY Does this work???
+        Because that would be pretty epic!
+    ]#
+
     for (N=1,IsolationArray:count()) {
         holoEntity(IsolationArray[N,number]):setSubMaterial(KeepSub,InvisibleTexture)
     }
