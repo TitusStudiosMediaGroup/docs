@@ -15,7 +15,8 @@
             $('span.nv:contains("string")').css('color', '#f0a060');
             $('span.nv:contains("vector")').css('color', '#f0a060');
 
-            //$('span.c1:contains("#[")').nextUntil('span.c1:contains("#")').css('color', '#808080');
+            $('span.nv').next(('span.o') || ('span.p')).prev().css('color', '#a0f0a0');
+            $('span.c1:contains("#[")').nextUntil('span.c1:contains("#")').css('color', '#808080');
         </script>
 
         {% include footer.html %}
