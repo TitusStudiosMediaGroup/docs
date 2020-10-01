@@ -6,7 +6,7 @@
 @outputs MyOutput MyOutput2 MyOutput3
 @persist [E]:entity MyVar [Color]:vector
 @trigger none
-@model default
+@model models/jazzie/trains/locomotives/emd/cab/battery_panel_gp28-35.mdl
 
 function void isolateSubMaterial(TargetHolo,IsolationArray:array,KeepSub,TotalSubMaterials,IsolatedMaterialOverride:string) {
     local InvisibleTexture = "models/proppertextures/invisible"
