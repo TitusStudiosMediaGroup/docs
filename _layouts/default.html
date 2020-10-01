@@ -29,7 +29,7 @@
             $('span.vi:contains("@")').next('span.na:contains("persist")').css('color', '#f0f0a0') // Directive Highlighing
             $('span.vi:contains("@")').next('span.na:contains("trigger")').css('color', '#f0f0a0').next('span.nv:contains("none")' || 'span.nv:contains("all")').css('color', '#f0f0a0') // Directive Highlighing
             
-            if($('span.vi:contains("@")').next('span.na:contains("model")').next('span.k:contains("default")' || 'span.nv:contains("none")')) {
+            if($('span.vi:contains("@")').next('span.na:contains("model")').next('span.k:contains("default")' || 'span.nv:contains("none")').length > 0) {
                 $('span.vi:contains("@")').next('span.na:contains("model")').css('color', '#f0f0a0').next('span.k:contains("default")' || 'span.nv:contains("none")').css('color', '#f0f0a0') // Directive Highlighing (Defaults)
             }
             else {
