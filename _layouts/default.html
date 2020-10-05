@@ -9,6 +9,14 @@
             </section>
         </div>
 
+        <ul>
+          {% for post in site.posts %}
+            <li>
+              <a href="{{ post.url }}">{{ post.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+        
         <script>
             $('span.nv').next(('span.o') || ('span.p')).prev().css('color', '#a0f0a0'); // Var Highlighing
             $('span.nv').prev(('span.o') || ('span.p')).next().css('color', '#a0f0a0'); // Var Highlighing
